@@ -3,7 +3,7 @@ const DB_NAME = 'cbcTrackerDB';
 const DB_VERSION = 1;
 const STORES = ['learners', 'attendance', 'assessments', 'settings'];
 const RUBRIC_LEVELS = ['Emerging', 'Developing', 'Proficient', 'Mastered'];
-const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', sessionKey: 'cbcLoggedIn' };
+const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', passwordUpdatedFlagKey: 'cbcPasswordUpdated', passwordUpdatedAtKey: 'cbcPasswordUpdatedAt', sessionKey: 'cbcLoggedIn' };
 
 let db;
 let loadedAssessmentRecords = [];
@@ -87,18 +87,38 @@ function bindAuthModule() {
 }
 
 function getAuthPassword() {
-  return localStorage.getItem(AUTH.passwordKey) || AUTH.defaultPassword;
+  const saved = localStorage.getItem(AUTH.passwordKey);
+  if (!saved) return AUTH.defaultPassword;
+  return saved.trim();
 }
 
 function bindSecurityModule() {
   $('changePasswordForm').addEventListener('submit', onChangePassword);
+  refreshPasswordUpdateFlag();
+}
+
+function refreshPasswordUpdateFlag() {
+  const flagEl = $('passwordUpdateFlag');
+  const updated = localStorage.getItem(AUTH.passwordUpdatedFlagKey) === 'true';
+  const updatedAt = localStorage.getItem(AUTH.passwordUpdatedAtKey);
+
+  if (!updated) {
+    flagEl.textContent = 'Password update flag: false (default password active).';
+    flagEl.classList.remove('success', 'error');
+    return;
+  }
+
+  const when = updatedAt ? ` Last updated: ${new Date(updatedAt).toLocaleString()}.` : '';
+  flagEl.textContent = `Password update flag: true.${when}`;
+  flagEl.classList.remove('error');
+  flagEl.classList.add('success');
 }
 
 function onChangePassword(event) {
   event.preventDefault();
-  const current = $('currentPassword').value;
-  const next = $('newPassword').value;
-  const confirm = $('confirmPassword').value;
+  const current = $('currentPassword').value.trim();
+  const next = $('newPassword').value.trim();
+  const confirm = $('confirmPassword').value.trim();
   const message = $('passwordChangeMessage');
 
   message.classList.remove('success', 'error');
@@ -128,9 +148,20 @@ function onChangePassword(event) {
   }
 
   localStorage.setItem(AUTH.passwordKey, next);
+  localStorage.setItem(AUTH.passwordUpdatedFlagKey, 'true');
+  localStorage.setItem(AUTH.passwordUpdatedAtKey, new Date().toISOString());
+
+  const verifySaved = getAuthPassword() === next;
+  if (!verifySaved) {
+    message.textContent = 'Password update failed. Please try again.';
+    message.classList.add('error');
+    return;
+  }
+
   $('changePasswordForm').reset();
-  message.textContent = 'Password changed successfully.';
+  message.textContent = 'Password changed successfully. Update flag: true';
   message.classList.add('success');
+  refreshPasswordUpdateFlag();
 }
 
 function logout() {

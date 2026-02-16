@@ -22,7 +22,7 @@
   </section>
 
   <script>
-    const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', sessionKey: 'cbcLoggedIn' };
+    const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', passwordUpdatedFlagKey: 'cbcPasswordUpdated', sessionKey: 'cbcLoggedIn' };
 
     function isAuthenticated() {
       return localStorage.getItem(AUTH.sessionKey) === 'true';
@@ -35,17 +35,20 @@
     document.getElementById('loginForm').addEventListener('submit', (event) => {
       event.preventDefault();
       const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value;
+      const password = document.getElementById('loginPassword').value.trim();
       const errorEl = document.getElementById('loginError');
 
-      const storedPassword = localStorage.getItem(AUTH.passwordKey) || AUTH.defaultPassword;
+      const storedPassword = (localStorage.getItem(AUTH.passwordKey) || AUTH.defaultPassword).trim();
       if (username === AUTH.username && password === storedPassword) {
         localStorage.setItem(AUTH.sessionKey, 'true');
         window.location.replace('index.html');
         return;
       }
 
-      errorEl.textContent = 'Invalid credentials. Please try again.';
+      const updatedFlag = localStorage.getItem(AUTH.passwordUpdatedFlagKey) === 'true';
+      errorEl.textContent = updatedFlag
+        ? 'Invalid credentials. Use your updated password.'
+        : 'Invalid credentials. Use admin / CBC2026.';
     });
   </script>
 </body>
