@@ -144,7 +144,7 @@ th { background: #f1f7ff; }
 
 @media print {
   body { background: white; }
-  .app-header, .top-nav, #reports .card:first-of-type { display: none !important; }
+  .app-header, .top-nav, #reports .report-controls { display: none !important; }
   main { padding: 0; }
   #reports .report { border: none; }
 }
