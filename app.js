@@ -24,6 +24,7 @@ async function init() {
   bindReportModule();
   bindBackupModule();
   bindSecurityModule();
+  bindPasswordToggles();
 
   $('attendanceDate').value = today;
   $('assessmentDate').value = today;
@@ -79,6 +80,20 @@ function promisifyRequest(request) {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
+  });
+}
+
+
+function bindPasswordToggles() {
+  document.querySelectorAll('.toggle-password').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const input = $(btn.dataset.target);
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁️';
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
   });
 }
 

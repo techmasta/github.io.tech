@@ -13,7 +13,12 @@
       <p>Sign in to open the CBC competency platform.</p>
       <form id="loginForm" class="login-form">
         <label>Username<input id="loginUsername" required autocomplete="username" /></label>
-        <label>Password<input id="loginPassword" type="password" required autocomplete="current-password" /></label>
+        <label>Password
+          <span class="password-field">
+            <input id="loginPassword" type="password" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" data-target="loginPassword" aria-label="Show password" title="Show or hide password">👁️</button>
+          </span>
+        </label>
         <button type="submit">Login</button>
       </form>
       <p id="loginDefaultHint" class="login-hint"><strong>Default credentials:</strong> admin / CBC2026</p>
@@ -37,6 +42,17 @@
     if (isPasswordUpdated) {
       defaultHint.hidden = true;
     }
+
+
+    document.querySelectorAll('.toggle-password').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.textContent = show ? '🙈' : '👁️';
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
 
     document.getElementById('loginForm').addEventListener('submit', (event) => {
       event.preventDefault();

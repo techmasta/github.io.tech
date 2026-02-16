@@ -162,9 +162,24 @@
       </div>
       <form id="changePasswordForm" class="card form-grid">
         <h3 class="full">Account Security</h3>
-        <label>Current Password<input id="currentPassword" type="password" required /></label>
-        <label>New Password<input id="newPassword" type="password" minlength="6" required /></label>
-        <label>Confirm New Password<input id="confirmPassword" type="password" minlength="6" required /></label>
+        <label>Current Password
+          <span class="password-field">
+            <input id="currentPassword" type="password" required />
+            <button type="button" class="toggle-password" data-target="currentPassword" aria-label="Show password" title="Show or hide password">👁️</button>
+          </span>
+        </label>
+        <label>New Password
+          <span class="password-field">
+            <input id="newPassword" type="password" minlength="6" required />
+            <button type="button" class="toggle-password" data-target="newPassword" aria-label="Show password" title="Show or hide password">👁️</button>
+          </span>
+        </label>
+        <label>Confirm New Password
+          <span class="password-field">
+            <input id="confirmPassword" type="password" minlength="6" required />
+            <button type="button" class="toggle-password" data-target="confirmPassword" aria-label="Show password" title="Show or hide password">👁️</button>
+          </span>
+        </label>
         <div class="actions full">
           <button type="submit">Change Password</button>
         </div>
