@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Login - CBC Competency Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="login-page">
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h2>Teacher Login</h2>
+      <p>Sign in to open the CBC competency platform.</p>
+      <form id="loginForm" class="login-form">
+        <label>Username<input id="loginUsername" required autocomplete="username" /></label>
+        <label>Password<input id="loginPassword" type="password" required autocomplete="current-password" /></label>
+        <button type="submit">Login</button>
+      </form>
+      <p class="login-hint"><strong>Default credentials:</strong> admin / CBC2026</p>
+      <p id="loginError" class="login-error" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <script>
+    const AUTH = { username: 'admin', password: 'CBC2026', sessionKey: 'cbcLoggedIn' };
+
+    function isAuthenticated() {
+      return localStorage.getItem(AUTH.sessionKey) === 'true';
+    }
+
+    if (isAuthenticated()) {
+      window.location.replace('index.html');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorEl = document.getElementById('loginError');
+
+      if (username === AUTH.username && password === AUTH.password) {
+        localStorage.setItem(AUTH.sessionKey, 'true');
+        window.location.replace('index.html');
+        return;
+      }
+
+      errorEl.textContent = 'Invalid credentials. Use admin / CBC2026.';
+    });
+  </script>
+</body>
+</html>

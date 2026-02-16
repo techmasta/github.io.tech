@@ -12,6 +12,8 @@ const $ = (id) => document.getElementById(id);
 const today = new Date().toISOString().split('T')[0];
 
 async function init() {
+  requireAuthentication();
+
   db = await openDatabase();
   await seedSampleDataIfEmpty();
   bindAuthModule();
@@ -28,7 +30,6 @@ async function init() {
   await refreshLearnerTable();
   await refreshReportLearnerOptions();
   await refreshDashboard();
-  setAppVisibility(isAuthenticated());
 }
 
 function openDatabase() {
@@ -81,45 +82,21 @@ function promisifyRequest(request) {
 }
 
 function bindAuthModule() {
-  $('loginForm').addEventListener('submit', onLoginSubmit);
   $('logoutBtn').addEventListener('click', logout);
-}
-
-function onLoginSubmit(event) {
-  event.preventDefault();
-  const username = $('loginUsername').value.trim();
-  const password = $('loginPassword').value;
-
-  if (username === AUTH.username && password === AUTH.password) {
-    localStorage.setItem(AUTH.sessionKey, 'true');
-    $('loginError').textContent = '';
-    $('loginForm').reset();
-    setAppVisibility(true);
-    return;
-  }
-
-  $('loginError').textContent = 'Invalid credentials. Use the default credentials shown below.';
 }
 
 function logout() {
   localStorage.removeItem(AUTH.sessionKey);
-  setAppVisibility(false);
+  window.location.href = 'login.html';
 }
 
 function isAuthenticated() {
   return localStorage.getItem(AUTH.sessionKey) === 'true';
 }
 
-function setAppVisibility(isLoggedIn) {
-  const loginScreen = $('loginScreen');
-  document.querySelectorAll('.app-shell').forEach((el) => {
-    el.hidden = !isLoggedIn;
-  });
-  loginScreen.hidden = isLoggedIn;
-
-  if (!isLoggedIn) {
-    $('loginUsername').focus();
-  }
+function requireAuthentication() {
+  if (isAuthenticated()) return;
+  window.location.href = 'login.html';
 }
 
 async function seedSampleDataIfEmpty() {
