@@ -38,6 +38,7 @@ h1 { margin: 0 0 .25rem; font-size: 1.4rem; }
 .nav-btn {
   border: 1px solid var(--border);
   background: white;
+  color: var(--text);
   border-radius: .5rem;
   padding: .65rem .35rem;
   font-weight: 600;
@@ -90,13 +91,23 @@ textarea { min-height: 85px; resize: vertical; }
 .checkbox input { width: 18px; height: 18px; }
 
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .8rem; }
-button {
+.actions button,
+.card button,
+#backup button,
+#attendanceForm button,
+#assessmentMetaForm button,
+#reports button {
   background: var(--primary);
   border-color: var(--primary);
   color: white;
   cursor: pointer;
 }
-button.secondary { background: #eef5ff; border-color: #bad4f2; color: #0a4f83; }
+.actions button.secondary,
+.card button.secondary,
+#backup button.secondary,
+#attendanceForm button.secondary,
+#assessmentMetaForm button.secondary,
+#reports button.secondary { background: #eef5ff; border-color: #bad4f2; color: #0a4f83; }
 
 .filters { display: grid; grid-template-columns: 1fr; gap: .5rem; margin-bottom: .6rem; }
 .table-wrap { overflow-x: auto; }
