@@ -3,7 +3,7 @@ const DB_NAME = 'cbcTrackerDB';
 const DB_VERSION = 1;
 const STORES = ['learners', 'attendance', 'assessments', 'settings'];
 const RUBRIC_LEVELS = ['Emerging', 'Developing', 'Proficient', 'Mastered'];
-const AUTH = { username: 'admin', password: 'CBC2026', sessionKey: 'cbcLoggedIn' };
+const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', sessionKey: 'cbcLoggedIn' };
 
 let db;
 let loadedAssessmentRecords = [];
@@ -23,6 +23,7 @@ async function init() {
   bindAssessmentModule();
   bindReportModule();
   bindBackupModule();
+  bindSecurityModule();
 
   $('attendanceDate').value = today;
   $('assessmentDate').value = today;
@@ -83,6 +84,53 @@ function promisifyRequest(request) {
 
 function bindAuthModule() {
   $('logoutBtn').addEventListener('click', logout);
+}
+
+function getAuthPassword() {
+  return localStorage.getItem(AUTH.passwordKey) || AUTH.defaultPassword;
+}
+
+function bindSecurityModule() {
+  $('changePasswordForm').addEventListener('submit', onChangePassword);
+}
+
+function onChangePassword(event) {
+  event.preventDefault();
+  const current = $('currentPassword').value;
+  const next = $('newPassword').value;
+  const confirm = $('confirmPassword').value;
+  const message = $('passwordChangeMessage');
+
+  message.classList.remove('success', 'error');
+
+  if (current !== getAuthPassword()) {
+    message.textContent = 'Current password is incorrect.';
+    message.classList.add('error');
+    return;
+  }
+
+  if (next.length < 6) {
+    message.textContent = 'New password must be at least 6 characters.';
+    message.classList.add('error');
+    return;
+  }
+
+  if (next !== confirm) {
+    message.textContent = 'New password and confirmation do not match.';
+    message.classList.add('error');
+    return;
+  }
+
+  if (next === current) {
+    message.textContent = 'New password should be different from current password.';
+    message.classList.add('error');
+    return;
+  }
+
+  localStorage.setItem(AUTH.passwordKey, next);
+  $('changePasswordForm').reset();
+  message.textContent = 'Password changed successfully.';
+  message.classList.add('success');
 }
 
 function logout() {

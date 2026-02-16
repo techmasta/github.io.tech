@@ -54,6 +54,9 @@ h1 { margin: 0 0 .25rem; font-size: 1.4rem; }
 .login-form { display: grid; gap: .65rem; }
 .login-hint { color: var(--muted); font-size: .9rem; margin-bottom: 0; }
 .login-error { min-height: 1.2rem; color: #a00000; margin-top: .5rem; }
+.password-change-message { min-height: 1.1rem; margin: 0; font-size: .9rem; }
+.password-change-message.success { color: #176b42; }
+.password-change-message.error { color: #a00000; }
 
 .top-nav {
   display: grid;

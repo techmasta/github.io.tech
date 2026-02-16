@@ -22,7 +22,7 @@
   </section>
 
   <script>
-    const AUTH = { username: 'admin', password: 'CBC2026', sessionKey: 'cbcLoggedIn' };
+    const AUTH = { username: 'admin', defaultPassword: 'CBC2026', passwordKey: 'cbcPassword', sessionKey: 'cbcLoggedIn' };
 
     function isAuthenticated() {
       return localStorage.getItem(AUTH.sessionKey) === 'true';
@@ -38,13 +38,14 @@
       const password = document.getElementById('loginPassword').value;
       const errorEl = document.getElementById('loginError');
 
-      if (username === AUTH.username && password === AUTH.password) {
+      const storedPassword = localStorage.getItem(AUTH.passwordKey) || AUTH.defaultPassword;
+      if (username === AUTH.username && password === storedPassword) {
         localStorage.setItem(AUTH.sessionKey, 'true');
         window.location.replace('index.html');
         return;
       }
 
-      errorEl.textContent = 'Invalid credentials. Use admin / CBC2026.';
+      errorEl.textContent = 'Invalid credentials. Please try again.';
     });
   </script>
 </body>
