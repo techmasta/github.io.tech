@@ -16,7 +16,7 @@
         <label>Password<input id="loginPassword" type="password" required autocomplete="current-password" /></label>
         <button type="submit">Login</button>
       </form>
-      <p class="login-hint"><strong>Default credentials:</strong> admin / CBC2026</p>
+      <p id="loginDefaultHint" class="login-hint"><strong>Default credentials:</strong> admin / CBC2026</p>
       <p id="loginError" class="login-error" aria-live="polite"></p>
     </div>
   </section>
@@ -30,6 +30,12 @@
 
     if (isAuthenticated()) {
       window.location.replace('index.html');
+    }
+
+    const defaultHint = document.getElementById('loginDefaultHint');
+    const isPasswordUpdated = localStorage.getItem(AUTH.passwordUpdatedFlagKey) === 'true';
+    if (isPasswordUpdated) {
+      defaultHint.hidden = true;
     }
 
     document.getElementById('loginForm').addEventListener('submit', (event) => {
