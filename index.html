@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CBC Competency Tracker - Kenya</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Kenya CBC Competency Tracker</h1>
+    <p class="subheading">Learner-centered progress monitoring for Junior/Secondary School</p>
+  </header>
+
+  <nav class="top-nav" aria-label="Main navigation">
+    <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+    <button class="nav-btn" data-target="learners">Learners</button>
+    <button class="nav-btn" data-target="attendance">Attendance</button>
+    <button class="nav-btn" data-target="assessments">Assessments</button>
+    <button class="nav-btn" data-target="reports">Reports</button>
+    <button class="nav-btn" data-target="backup">Backup</button>
+  </nav>
+
+  <main>
+    <section id="dashboard" class="panel active">
+      <h2>Dashboard</h2>
+      <div class="stat-grid">
+        <article class="stat-card"><h3>Total Learners</h3><p id="statLearners">0</p></article>
+        <article class="stat-card"><h3>Total Streams</h3><p id="statStreams">0</p></article>
+        <article class="stat-card"><h3>Weekly Attendance</h3><p id="statWeeklyAttendance">0%</p></article>
+        <article class="stat-card"><h3>Average Mastery</h3><p id="statMastery">N/A</p></article>
+      </div>
+      <div class="two-col">
+        <article class="card">
+          <h3>Mastery Overview</h3>
+          <ul id="masteryOverview"></ul>
+        </article>
+        <article class="card">
+          <h3>Learners Needing Support</h3>
+          <ul id="supportAlerts"></ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="learners" class="panel">
+      <h2>Learner Records</h2>
+      <form id="learnerForm" class="card form-grid">
+        <input type="hidden" id="learnerId" />
+        <label>Admission Number<input required id="admissionNumber" /></label>
+        <label>Full Name<input required id="fullName" /></label>
+        <label>Date of Birth<input type="date" id="dob" /></label>
+        <label>Gender
+          <select id="gender">
+            <option>Female</option>
+            <option>Male</option>
+            <option>Prefer not to say</option>
+          </select>
+        </label>
+        <label>Grade/Class<input id="grade" placeholder="e.g., Grade 8" /></label>
+        <label>Stream<input id="stream" placeholder="e.g., North" /></label>
+        <label>Guardian Phone<input id="guardianPhone" /></label>
+        <label>Guardian Email<input type="email" id="guardianEmail" /></label>
+        <label class="full">Learner Notes<textarea id="notes" placeholder="Support needs and strengths"></textarea></label>
+        <label class="full checkbox"><input type="checkbox" id="consent" required /> Parent/Guardian consent for data use</label>
+        <div class="actions full">
+          <button type="submit">Save Learner</button>
+          <button type="button" id="resetLearnerForm" class="secondary">Clear</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <div class="filters">
+          <label>Search<input id="learnerSearch" placeholder="Name or admission no." /></label>
+          <label>Filter Grade<input id="filterGrade" placeholder="Grade" /></label>
+          <label>Filter Stream<input id="filterStream" placeholder="Stream" /></label>
+        </div>
+        <div class="table-wrap">
+          <table id="learnersTable">
+            <thead><tr><th>Adm No</th><th>Name</th><th>Grade</th><th>Stream</th><th>Guardian</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="attendance" class="panel">
+      <h2>Attendance Monitoring</h2>
+      <form id="attendanceForm" class="card inline-form">
+        <label>Date<input type="date" id="attendanceDate" required /></label>
+        <label>Grade/Class<input id="attendanceGrade" required /></label>
+        <label>Stream<input id="attendanceStream" required /></label>
+        <button type="button" id="loadAttendanceGrid">Load Class List</button>
+      </form>
+      <div class="card table-wrap">
+        <table id="attendanceTable">
+          <thead><tr><th>Learner</th><th>Admission No</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button id="saveAttendance">Save Attendance</button>
+        <button id="exportAttendance" class="secondary">Export Attendance CSV</button>
+      </div>
+    </section>
+
+    <section id="assessments" class="panel">
+      <h2>Competency-Based Assessments</h2>
+      <form id="assessmentMetaForm" class="card form-grid">
+        <label>Assessment Title<input id="assessmentTitle" required /></label>
+        <label>Learning Area<input id="learningArea" placeholder="Mathematics, English..." required /></label>
+        <label>Grade/Class<input id="assessmentGrade" required /></label>
+        <label>Stream<input id="assessmentStream" required /></label>
+        <label>Date<input type="date" id="assessmentDate" required /></label>
+        <label class="full">Competency Items (comma separated)
+          <input id="competencyItems" placeholder="Problem solving, Communication, Creativity" required />
+        </label>
+        <div class="actions full">
+          <button type="button" id="loadAssessmentGrid">Load Assessment Grid</button>
+        </div>
+      </form>
+      <div class="card table-wrap">
+        <table id="assessmentTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <button id="saveAssessment">Save Assessment Event</button>
+        <button id="exportAssessmentCsv" class="secondary">Export Assessment CSV</button>
+        <button id="exportAssessmentJson" class="secondary">Export Assessment JSON</button>
+      </div>
+    </section>
+
+    <section id="reports" class="panel">
+      <h2>CBC Learner Reports</h2>
+      <div class="card inline-form">
+        <label>Select Learner
+          <select id="reportLearnerSelect"></select>
+        </label>
+        <label>Teacher Comment
+          <textarea id="reportComment" placeholder="Qualitative summary, growth areas, next support steps"></textarea>
+        </label>
+        <button id="generateReport" type="button">Generate Report</button>
+        <button id="printReport" type="button" class="secondary">Print A4 Report</button>
+      </div>
+      <article id="reportOutput" class="report card"></article>
+    </section>
+
+    <section id="backup" class="panel">
+      <h2>Import / Export & Data Backup</h2>
+      <div class="card">
+        <h3>Import Learners CSV</h3>
+        <p>CSV headers: admissionNumber, fullName, dob, gender, grade, stream, guardianPhone, guardianEmail, notes, consent</p>
+        <input type="file" id="importLearnersFile" accept=".csv" />
+        <button id="importLearnersBtn">Import Learners</button>
+      </div>
+      <div class="card actions">
+        <button id="exportAllJson">Export Full School Backup (JSON)</button>
+        <button id="downloadLearnerTemplate" class="secondary">Download Learner CSV Template</button>
+      </div>
+    </section>
+  </main>
+
+  <template id="attendanceStatusTemplate">
+    <select>
+      <option value="Present">Present</option>
+      <option value="Absent">Absent</option>
+      <option value="Late">Late</option>
+    </select>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
