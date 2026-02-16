@@ -3,6 +3,7 @@ const DB_NAME = 'cbcTrackerDB';
 const DB_VERSION = 1;
 const STORES = ['learners', 'attendance', 'assessments', 'settings'];
 const RUBRIC_LEVELS = ['Emerging', 'Developing', 'Proficient', 'Mastered'];
+const AUTH = { username: 'admin', password: 'CBC2026', sessionKey: 'cbcLoggedIn' };
 
 let db;
 let loadedAssessmentRecords = [];
@@ -13,6 +14,7 @@ const today = new Date().toISOString().split('T')[0];
 async function init() {
   db = await openDatabase();
   await seedSampleDataIfEmpty();
+  bindAuthModule();
   bindNavigation();
   bindLearnerModule();
   bindAttendanceModule();
@@ -26,6 +28,7 @@ async function init() {
   await refreshLearnerTable();
   await refreshReportLearnerOptions();
   await refreshDashboard();
+  setAppVisibility(isAuthenticated());
 }
 
 function openDatabase() {
@@ -75,6 +78,48 @@ function promisifyRequest(request) {
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
+}
+
+function bindAuthModule() {
+  $('loginForm').addEventListener('submit', onLoginSubmit);
+  $('logoutBtn').addEventListener('click', logout);
+}
+
+function onLoginSubmit(event) {
+  event.preventDefault();
+  const username = $('loginUsername').value.trim();
+  const password = $('loginPassword').value;
+
+  if (username === AUTH.username && password === AUTH.password) {
+    localStorage.setItem(AUTH.sessionKey, 'true');
+    $('loginError').textContent = '';
+    $('loginForm').reset();
+    setAppVisibility(true);
+    return;
+  }
+
+  $('loginError').textContent = 'Invalid credentials. Use the default credentials shown below.';
+}
+
+function logout() {
+  localStorage.removeItem(AUTH.sessionKey);
+  setAppVisibility(false);
+}
+
+function isAuthenticated() {
+  return localStorage.getItem(AUTH.sessionKey) === 'true';
+}
+
+function setAppVisibility(isLoggedIn) {
+  const loginScreen = $('loginScreen');
+  document.querySelectorAll('.app-shell').forEach((el) => {
+    el.hidden = !isLoggedIn;
+  });
+  loginScreen.hidden = isLoggedIn;
+
+  if (!isLoggedIn) {
+    $('loginUsername').focus();
+  }
 }
 
 async function seedSampleDataIfEmpty() {

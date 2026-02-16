@@ -7,12 +7,28 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="app-header">
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h2>Teacher Login</h2>
+      <p>Sign in to access the CBC competency tracker.</p>
+      <form id="loginForm" class="login-form">
+        <label>Username<input id="loginUsername" required autocomplete="username" /></label>
+        <label>Password<input id="loginPassword" type="password" required autocomplete="current-password" /></label>
+        <button type="submit">Login</button>
+      </form>
+      <p class="login-hint"><strong>Default credentials:</strong> admin / CBC2026</p>
+      <p id="loginError" class="login-error" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <header class="app-header app-shell" hidden>
+
     <h1>Kenya CBC Competency Tracker</h1>
     <p class="subheading">Learner-centered progress monitoring for Junior/Secondary School</p>
+    <button id="logoutBtn" class="secondary logout-btn" type="button">Logout</button>
   </header>
 
-  <nav class="top-nav" aria-label="Main navigation">
+  <nav class="top-nav app-shell" aria-label="Main navigation" hidden>
     <button class="nav-btn active" data-target="dashboard">Dashboard</button>
     <button class="nav-btn" data-target="learners">Learners</button>
     <button class="nav-btn" data-target="attendance">Attendance</button>
@@ -21,7 +37,7 @@
     <button class="nav-btn" data-target="backup">Backup</button>
   </nav>
 
-  <main>
+  <main class="app-shell" hidden>
     <section id="dashboard" class="panel active">
       <h2>Dashboard</h2>
       <div class="stat-grid">
